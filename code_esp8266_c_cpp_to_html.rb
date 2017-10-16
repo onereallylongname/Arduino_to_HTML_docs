@@ -4,7 +4,7 @@ Help = "Reads files and looks for my headrs and de \"server.on\" command to writ
         -v/-version Version
         -h/-help Help
         Files will appear in the order of the ARGV
-        Note: This code was created to work with arduino esp826 code!"
+        Note: This code was created to work with arduino esp8266 code!"
 class FileCToHtml
   def initialize
     if ARGV.empty?; puts "No valid args!"; return; end
@@ -94,9 +94,6 @@ private
     fileOldName = @readFileName1.split('/')
     fileOldName = @readFileName1.split('\\') if @readFileName.split('\\').size > @readFileName.split('/').size
     fileOldName = fileOldName[-1].split('.')[-2]
-    fileName    = "Tese_Antonio_Almeida_2016"
-    htmlDirName = "D:\\Toshiba\\Dropbox\\UA_Tese_esp_Docs\\ESP_DOCS\\"
-    codeFileNewname0 = "CodeMenuFrom_#{fileName}.html"
     codeFileNewname1 = "CodeMenuFrom_#{fileOldName}.html"
     htmlHeader = "<!DOCTYPE html>
                   <html>
@@ -161,9 +158,8 @@ private
                   }
                   </style>
                   </head>"
-    fileNewCode = htmlHeader + "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"mailto:antonioalmeida2099@gmail.com\"> mail me </a></p></footer> </body> </html>"
-    #File.write(htmlDirName + codeFileNewname0, fileNewCode) #htmlDirName +
-    File.write(htmlDirName + codeFileNewname1, fileNewCode)
+    fileNewCode = htmlHeader + "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
+    File.write(codeFileNewname1, fileNewCode)
     puts " Done!"
   end
   def file_exists?(fileName)
