@@ -1,17 +1,21 @@
 # encoding: Iso-8859-1
-Version = "2.0" # read multiple files
-Help = "Reads files and looks for my headrs and de \"server.on\" command to write a html file.
-        -v/-version Version
-        -h/-help Help
-        Files will appear in the order of the ARGV
-        Note: This code was created to work with arduino esp8266 code!"
+
 class FileCToHtml
-  def initialize
-    if ARGV.empty?; puts "No valid args!"; return; end
-    if ARGV[0].eql? "-v" or ARGV[0].eql? "-version"; puts Version; return; end
-    if ARGV[0].eql? "-h" or ARGV[0].eql? "-help"; puts Help; return; end
+  Version = "2.0" # read multiple files
+  Help = "Reads files and looks for my headrs and de \"server.on\" command to write a html file.
+          -v/-version Version
+          -h/-help Help
+          Files will appear in the order of the arguments
+          Note: This code was created to work with arduino esp8266 code!"
+
+  def initialize argsIn
+    if argsIn.empty?; puts "No valid args! Try -h"; return; end
+    if argsIn[0].eql? "-v" or argsIn[0].eql? "-version"; puts Version; return; end
+    if argsIn[0].eql? "-h" or argsIn[0].eql? "-help"; puts Help; return; end
+
     @readFileNameArray = []
-    ARGV.each { |names| @readFileNameArray.push(names.to_s) }
+    argsIn.each { |names| @readFileNameArray.push(names.to_s) }
+
     @readFileName1 = @readFileNameArray[0]
     @fileCode = ""
     @knownFunctions = []
@@ -19,11 +23,10 @@ class FileCToHtml
     @webUrl = "<a name=\"aurl\" <h3 style=\"color: #ff9933\"> Avaliable url: </h3> </a> <br> "
     @urlNumber = 0
     @readFileNameArray.each do |name|
-    @readFileName = name
       if file_exists? name
         print "Reading: #{name}"
-        readMyFile
-        writeToMyFile
+        readMyFile name
+        writeToMyFile name
       else
         puts  "File #{name} does not exist"
       end
@@ -32,12 +35,12 @@ class FileCToHtml
 
 private
 
-  def readMyFile
+  def readMyFile fileName
     lineCounter = 0
     counter = 0
     headerc = false
     firstFunc = true
-    file = File.new(@readFileName, "r:Iso-8859-1")
+    file = File.new(fileName, "r:Iso-8859-1")
     while (line = file.gets)
       print " ." if lineCounter%10 == 0
       lineCounter += 1
@@ -90,9 +93,9 @@ private
     @fileHeader = @fileHeader + "<br> <br>"
   end
 
-  def writeToMyFile
+  def writeToMyFile fileName
     fileOldName = @readFileName1.split('/')
-    fileOldName = @readFileName1.split('\\') if @readFileName.split('\\').size > @readFileName.split('/').size
+    fileOldName = @readFileName1.split('\\') if fileName.split('\\').size > fileName.split('/').size
     fileOldName = fileOldName[-1].split('.')[-2]
     codeFileNewname1 = "Code_From_#{fileOldName}.html"
     htmlHeader = "<!DOCTYPE html>
@@ -168,4 +171,4 @@ private
 
 end
 
-FileCToHtml.new
+FileCToHtml.new(ARGV)
