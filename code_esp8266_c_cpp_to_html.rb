@@ -23,7 +23,7 @@ class FileCToHtml
     @webUrl = "<a name=\"aurl\" <h3 style=\"color: #ff9933\"> Avaliable url: </h3> </a> <br> "
     @urlNumber = 0
     @readFileNameArray.each do |name|
-      if file_exists? name
+      if File.file?(name)
         print "Reading: #{name}"
         readMyFile name
         writeToMyFile name
@@ -34,6 +34,21 @@ class FileCToHtml
   end
 
 private
+
+  def getStyle
+    return File.read('css/style.css') if File.file?('css/style.css')
+    raise "CSS file not found!"
+  end
+
+  def split_name fileName
+    newName = 'CodeFile'
+    if fileName.split('\\').size > fileName.split('/').size
+      newName = @readFileName1.split('\\')
+    else
+     newName = @readFileName1.split('/')
+   end
+   return newName
+  end
 
   def readMyFile fileName
     lineCounter = 0
@@ -94,79 +109,18 @@ private
   end
 
   def writeToMyFile fileName
-    fileOldName = @readFileName1.split('/')
-    fileOldName = @readFileName1.split('\\') if fileName.split('\\').size > fileName.split('/').size
-    fileOldName = fileOldName[-1].split('.')[-2]
-    codeFileNewname1 = "Code_From_#{fileOldName}.html"
-    htmlHeader = "<!DOCTYPE html>
-                  <html>
-                  <head>
-                  <style>  #content {
-                    height: 95%
-                    width: 100%;
-                  }
-                  #sidebar {
-                      background-color: #ff9933;
-                      position: fixed;
-                      top: 0;
-                      bottom: 0;
-                      left: 0;
-                      right: 235px;
-                      width: 235px;
-                      padding-top: 8px;
-                      padding-left: 25px;
-                      overflow-y: scroll;
-                      height: 92%
-                  }
-                  #main {
-                      margin-left: 350px;
+     if fileName.split('\\').size > fileName.split('/').size
+       newName = @readFileName1.split('\\')
+     else
+      newName = @readFileName1.split('/')
+    end
+    codeFileNewname = "Code_From_#{newName[-1].split('.')[-2]}.html"
+    style = getStyle
+    htmlHeader = "<!DOCTYPE html>\n <html>\n    <head>\n      <style>\n#{style}\n      </style>\n    </head>"
 
-                  }
-                  #title {
-                      position: relative;
-                      opacity: 1;
-                      top: 0;
-                      padding-left: 50px;
-                      padding-right: 50%;
-
-                  }
-                  #main1 {
-                      position: relative;
-                      margin-left: 20px;
-                  }
-                  footer {
-                      background: #ff9933;
-                      position:fixed;
-                      left: 0;
-                      padding-left: 0;
-                      bottom:0px;
-                      height: 7.1%;
-                      width:260px;
-                      text-align: center;
-                  }
-                  ::-webkit-scrollbar {
-                      width: 5px;
-                  }
-                  a:link {
-                      text-decoration: none;
-                  }
-                  a:link, a:visited {
-                      color: white;
-                      text-decoration: none;
-                      cursor: auto;
-                  }
-                  a:link:active, a:visited:active {
-                      color: black;
-                      text-decoration: none;
-                  }
-                  </style>
-                  </head>"
     fileNewCode = htmlHeader + "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
-    File.write(codeFileNewname1, fileNewCode)
+    File.write(codeFileNewname, fileNewCode)
     puts " Done!"
-  end
-  def file_exists?(fileName)
-    File.file?(fileName)
   end
 
 end
