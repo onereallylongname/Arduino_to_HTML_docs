@@ -16,7 +16,7 @@ class FileCToHtml
     @readFileNameArray = []
     argsIn.each { |names| @readFileNameArray.push(names.to_s) }
 
-    @readFileName1 = @readFileNameArray[0]
+    #TODO: make it run once
     @fileCode = ""
     @knownFunctions = []
     @fileHeader = "<a href=\"#aurl\"> Avaliable url </a> <br>"
@@ -43,9 +43,9 @@ private
   def split_name fileName
     newName = 'CodeFile'
     if fileName.split('\\').size > fileName.split('/').size
-      newName = @readFileName1.split('\\')
+      newName = fileName.split('\\')
     else
-     newName = @readFileName1.split('/')
+     newName = fileName.split('/')
    end
    return newName
   end
@@ -57,6 +57,7 @@ private
     return (line += 1)
   end
 
+#TODO: refactor readMyFile
   def readMyFile fileName
     numLines = File.foreach(fileName).count
     lineCounter = 0
@@ -120,8 +121,10 @@ private
     newName = split_name fileName
     codeFileNewname = "Code_From_#{newName[-1].split('.')[-2]}.html"
     style = getStyle
+    #TODO: refactor header (create function)
     htmlHeader = "<!DOCTYPE html>\n <html>\n    <head>\n      <style>\n#{style}\n      </style>\n    </head>"
     htmlBody = "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
+#TODO: change output dir
     File.write(codeFileNewname, htmlHeader + htmlBody)
     puts " Done!"
   end
