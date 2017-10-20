@@ -1,5 +1,5 @@
 # encoding: Iso-8859-1
-Version = "1.2.9" # read multiple files
+Version = "2.0" # read multiple files
 Help = "Reads files and looks for my headrs and de \"server.on\" command to write a html file.
         -v/-version Version
         -h/-help Help
