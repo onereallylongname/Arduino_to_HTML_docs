@@ -94,7 +94,7 @@ private
     fileOldName = @readFileName1.split('/')
     fileOldName = @readFileName1.split('\\') if @readFileName.split('\\').size > @readFileName.split('/').size
     fileOldName = fileOldName[-1].split('.')[-2]
-    codeFileNewname1 = "CodeMenuFrom_#{fileOldName}.html"
+    codeFileNewname1 = "Code_From_#{fileOldName}.html"
     htmlHeader = "<!DOCTYPE html>
                   <html>
                   <head>
