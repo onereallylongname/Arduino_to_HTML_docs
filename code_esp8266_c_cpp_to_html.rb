@@ -50,15 +50,23 @@ private
    return newName
   end
 
+  def disply_percente line, numLines
+    precenteDone = (line*100/numLines).to_i
+    print (" " + precenteDone.to_s + "%") if (precenteDone % 25 == 0 and precenteDone > 0)
+    print " ." if line%10 == 0
+    return (line += 1)
+  end
+
   def readMyFile fileName
+    numLines = File.foreach(fileName).count
     lineCounter = 0
+    precenteDone = 0
     counter = 0
     headerc = false
     firstFunc = true
     file = File.new(fileName, "r:Iso-8859-1")
     while (line = file.gets)
-      print " ." if lineCounter%10 == 0
-      lineCounter += 1
+      lineCounter = disply_percente lineCounter, numLines
       a = line[0..3]
       if a.eql? "//>>"
         counter = 2
