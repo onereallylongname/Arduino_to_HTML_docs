@@ -109,17 +109,12 @@ private
   end
 
   def writeToMyFile fileName
-     if fileName.split('\\').size > fileName.split('/').size
-       newName = @readFileName1.split('\\')
-     else
-      newName = @readFileName1.split('/')
-    end
+    newName = split_name fileName
     codeFileNewname = "Code_From_#{newName[-1].split('.')[-2]}.html"
     style = getStyle
     htmlHeader = "<!DOCTYPE html>\n <html>\n    <head>\n      <style>\n#{style}\n      </style>\n    </head>"
-
-    fileNewCode = htmlHeader + "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
-    File.write(codeFileNewname, fileNewCode)
+    htmlBody = "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
+    File.write(codeFileNewname, htmlHeader + htmlBody)
     puts " Done!"
   end
 
