@@ -12,36 +12,23 @@ class FileCToHtml
   FILE_TYPES = ['c', 'cpp', 'ino', 'js']
 
   def initialize argsIn
+    # Return if no arguments where given
     if argsIn.empty?; puts "No valid args! Try -h"; return; end
-    @classObj = self
+    # Create hash with options
     @options = {:h => false, :v => false, :i => './', :o => './', :f => []}
-
+    # Process argv into options
     read_argv_flags argsIn
-
+    # Check for version, help or if there are no files to run
     if @options[:v]; puts Version; return; end
     if @options[:h]; puts Help; return; end
     if @options[:f].empty?; puts 'Exit: file types not suported.'; return; end
 
 
     p @options
-
-    # case option
-    #
-    # when condition
-    #
-    # end
 puts 'estou aqui'
 #return  #TODO: retirar return
-  #  @readFileNameArray = []
-  #  argsIn.each { |names| @readFileNameArray.push(names.to_s) }
 
-    #TODO: make it run once
-    @fileCode = ""
-    @knownFunctions = []
-    @fileHeader = "<a href=\"#aurl\"> Avaliable url </a> <br>"
-    @webUrl = "<a name=\"aurl\" <h3 style=\"color: #ff9933\"> Avaliable url: </h3> </a> <br> "
-    @urlNumber = 0
-
+  # For each file, if it exists, read original and create html
     @options[:f].each do |name|
       if File.file?(make_path :i, name)
         puts"Reading: #{name}"
@@ -56,21 +43,22 @@ puts 'estou aqui'
 
 private
 
+  # Returns each file path
   def make_path inOut, name=''
     return @options[inOut] + '/' + name
   end
-
+  # Turns argv command into symbol
   def strip_to_sym strIn
     return strIn[1].to_sym
   end
-
+  # Checks file type against FILE_TYPES array
   def known_file_type fileName
     fileKnown = false
     fileType = fileName.split('.')[-1]
     FILE_TYPES.each { |ft| fileKnown |= fileType.eql? ft}
     return fileKnown
   end
-
+  # Process argv into options
   def read_argv_flags argsIn
     skipVal = argsIn.length + 1
     argsIn.each_with_index do |argIn, ind|
@@ -90,18 +78,18 @@ private
       puts argIn
     end
   end
-
+  # Read css styles file
   def getStyle
     return File.read('css/style.css') if File.file?('css/style.css')
     raise "CSS file not found!"
   end
-
+  # Creates output file name from original name
   def rename_out fileName
     name = fileName.split('/')[-1]
     name = name.split('\\')[-1]
    return "Code_From_#{name.gsub(/\./,'_')}.html"
   end
-
+  # Displays progress in read stage.
   def disply_percente line, numLines
     precenteDone = (line*100/numLines).to_i
     print (" " + precenteDone.to_s + "%") if (precenteDone % 25 == 0 and precenteDone > 0)
@@ -137,7 +125,6 @@ private
           headeropen  = "<br>"
           nameTag = nameTag.upcase
         end
-        @knownFunctions.push(nameTag.downcase)
         @fileHeader = @fileHeader + "<a href=\"##{nameTag.downcase}\">" + headeropen + nameTag + "</h4> <br> </a>"
         firstFunc = false
       end
