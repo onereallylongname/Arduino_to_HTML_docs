@@ -10,6 +10,11 @@ class FileCToHtml
           -i            Set input path
           -o            Set output path"
   FILE_TYPES = ['c', 'cpp', 'ino', 'js']
+  LANGS = {:cLike => {'//>' => :T1, '//>>' => :T2, '//>>>' => :T3, 'args' => :args, '//args' => :args,
+                      'rtrn' => :rtrn, '//rtrn' => :rtrn, 'dscr' => :dscr, '//dscr' => :dscr,
+                      '/****' => :startC, '****' => :endC}}
+
+  TAGS_TRANSLATOR = {:T1 => 'h1', :T2 => 'h3', :T3 => 'h5', :args => 'args', :rtrn => 'rtrn', :dscr => 'dscr'}
 
   def initialize argsIn
     # Return if no arguments where given
@@ -31,8 +36,9 @@ puts 'estou aqui'
   # For each file, if it exists, read original and create html
     @options[:f].each do |name|
       if File.file?(make_path :i, name)
+        lang = find_lang name
         puts"Reading: #{name}"
-        readMyFile name
+        readMyFile name, lang
         puts"Writing: #{name} to html"
         writeToMyFile name
       else
@@ -97,18 +103,82 @@ private
     return (line += 1)
   end
 
+  def find_lang name
+    case name.split('.')[-1].downcase
+    when 'ino'
+      return :cLike
+    when 'c'
+      return :cLike
+    when 'cpp'
+      return :cLike
+    when 'js'
+      return :cLike
+    end
+  end
+
+  def text_tag marker, lang
+    return 'p' if TAGS_TRANSLATOR[LANGS[lang][marker.strip]].nil?
+    return TAGS_TRANSLATOR[LANGS[lang][marker.strip]]
+  end
+
+  def find_line_content line
+    return line[4..-1].gsub(/[^0-9A-Za-z\-_]/, '')
+  end
+
+  def addToSideBar lineContente, textTag
+    @sileSideBar += "<#{textTag}> <a href=\"##{lineContente.downcase}\"> #{lineContente}  </a> </#{textTag}> <br>"
+  end
+
+  def addToBody lineContente, textTag, header=false
+    if header
+      @sileSideBar = "<#{textTag}> <a href=\"##{nameTag.downcase}\"> #{nameTag}</a><#{textTag}>"
+    else
+#TODO: copy add to body
+    end
+  end
+
 #TODO: refactor readMyFile
-  def readMyFile fileName
+  def readMyFile fileName, lang
     numLines = File.foreach(make_path( :i, fileName)).count
+    hashTagsFound = []
+    @fileBody = ""
+    @sileSideBar = "<a href=\"#aurl\"> Avaliable url </a> <br>"
+    @webUrl = "<a name=\"aurl\" <h3 class=\"maincolor\"> Avaliable url: </h3> </a> <br> "
+    @urlNumber = 0
     lineCounter = 0
     precenteDone = 0
     counter = 0
     headerc = false
     firstFunc = true
+
+    localOptions = {}
+
     file = File.new(make_path( :i, fileName), "r:Iso-8859-1")
+
+
     while (line = file.gets)
+
       lineCounter = disply_percente lineCounter, numLines
-      a = line[0..3]
+
+
+      a = line[0..4]
+
+      textTag = text_tag line[0..4], lang
+
+p textTag if textTag != 'p'
+
+      if [:T1, :T2, :T3].include? textTag
+        counter = 2
+        lineContente = find_line_content line
+        addToSideBar lineContente, textTag
+        addToBody lineContente, textTag
+
+
+
+
+
+
+
       if a.eql? "//>>"
         counter = 2
         headerc = true
@@ -125,35 +195,35 @@ private
           headeropen  = "<br>"
           nameTag = nameTag.upcase
         end
-        @fileHeader = @fileHeader + "<a href=\"##{nameTag.downcase}\">" + headeropen + nameTag + "</h4> <br> </a>"
+        @sileSideBar = @sileSideBar + "<a href=\"##{nameTag.downcase}\">" + headeropen + nameTag + "</h4> <br> </a>"
         firstFunc = false
       end
       if counter > 0
         if headerc
-          @fileCode = @fileCode + "<br><p> <a name=\"#{nameTag.downcase}\"> <p style=\"color: #ff9933\"> <font size=\"4\">" + line[4..-1].chomp + "</font> </p>"
+          @fileBody = @fileBody + "<br><p> <a name=\"#{nameTag.downcase}\"> <p class=\"maincolor\">" + line[4..-1].chomp + " </p>"
           headerc = false
         elsif a.eql? "/***" or a.eql? "****"
             counter -= 1
         elsif line.split(' ')[0].eql? "args:" or line.split(' ')[0].eql? "dscr:" or line.split(' ')[0].eql? "rtrn:"
-          @fileCode = @fileCode + "<font color=\"#ff9933\">" + line.split(' ')[0] + "</font>" + line[6..-1].chomp + "<br>"
+          @fileBody = @fileBody + "<font class=\"maincolor\">" + line.split(' ')[0] + "</font>" + line[6..-1].chomp + "<br>"
         elsif line.include? "/*" or line.include? "*/"
-          @fileCode = @fileCode + "<font color=\"#b3bfcc\">" + line + "</font> <br>"
+          @fileBody = @fileBody + "<font class=\"maincolor\">" + line + "</font> <br>"
         else
-          @fileCode = @fileCode + line + "<br>"
+          @fileBody = @fileBody + line + "<br>"
         end
-         @fileCode = @fileCode + "</p>" if counter == 0
+         @fileBody = @fileBody + "</p>" if counter == 0
       end
       #check server.on functions
       if line.include? "server.on("
         @urlNumber += 1
         splitLine = line.split(/[\s(),]/).delete_if { |var| var.eql? ""}
-        @webUrl = @webUrl + "<a href=\"##{splitLine[-2].downcase}\" style=\"color: #990000\" >" + splitLine[1] +  "</a> ; "
+        @webUrl = @webUrl + "<a href=\"##{splitLine[-2].downcase}\" class=\"espurlcolor\" >" + splitLine[1] +  "</a> ; "
         @webUrl = @webUrl + "<br>" if @urlNumber % 10 == 0
       end
     end
     file.close
-    @fileCode = @fileCode + "<br> <font color=\"#ff9933\"> - - - - - \"\" - - - - - </font> <br>"
-    @fileHeader = @fileHeader + "<br> <br>"
+    @fileBody = @fileBody + "<br> <font class=\"maincolor\"> - - - - - \"\" - - - - - </font> <br>"
+    @sileSideBar = @sileSideBar + "<br> <br>"
     puts 'Done (1/2)'
   end
 
@@ -163,8 +233,7 @@ private
     style = getStyle
     #TODO: refactor header (create function)
     htmlHeader = "<!DOCTYPE html>\n <html>\n    <head>\n      <style>\n#{style}\n      </style>\n    </head>"
-    htmlBody = "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 style=\"color:white\"> Contents </h2>" + @fileHeader + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 style=\"color: #ff9933\"> Code functions </h1> <font color=\"#ff9933\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileCode + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
-#TODO: change output dir
+    htmlBody = "<body> <div id=\"content\"> <div id=\"sidebar\"> <h2 class=\"sidecolor\"> Contents </h2>" + @sileSideBar + "</div> <div id=\"main\"> <div class=\"container\" id=\"title\"> <h1 class=\"maincolor\"> Code functions </h1> <font class=\"maincolor\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> "  + @webUrl + @fileBody + " </div> </div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
     File.write(make_path(:o) + codeFileNewname, htmlHeader + htmlBody)
     puts " Done (2/2)!"
   end
