@@ -1,0 +1,123 @@
+<!DOCTYPE html> <html> <head> <title> Code_From_example_ino </title> <style> :root{
+  --doccolor: #ff9933;
+}
+#content {
+  height: 95%
+  width: 100%;
+}
+#sidebar {
+    background-color: var(--doccolor);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 30%;
+    padding-top: 8px;
+    padding-bottom: 10px;
+    overflow-y: scroll;
+    height: 90%;
+}
+#innersidebar{
+  margin-left: 60px;
+  margin-right: 0px;
+  width: 100%;
+}
+#sidebar h1{
+  padding-top: 10px;
+  padding-bottom: 0px;
+  color: white;
+  margin-bottom: 0px;
+  font-size: 1.5em;
+}
+#sidebar h2{
+  padding-top: 5px;
+  padding-bottom: 0px;
+  color: white;
+  margin-bottom: 0px;
+  font-size: 1.17em;
+}
+#sidebar h3{
+  padding-top: 5px;
+  padding-bottom: 0px;
+  color: white;
+  margin-bottom: 0px;
+  font-size: 1em;
+}
+#sidebar a:link {
+    text-decoration: none;
+}
+#sidebar a:link, a:visited {
+    color: white;
+    text-decoration: none;
+    cursor: auto;
+}
+#sidebar a:link:active, a:visited:active {
+    color: black;
+    text-decoration: none;
+}
+
+#main {
+    float: right;
+    width: 70%;
+}
+#maininnerdiv{
+  margin-left: 100px;
+}
+#main h1{
+  padding-top: 20px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+#main h2{
+  padding-top: 12px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+#main h3{
+  padding-top: 6px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+#title {
+    position: relative;
+    opacity: 1;
+    top: 0;
+    padding-left: 50px;
+    padding-right: 50%;
+
+}
+#main1 {
+    position: relative;
+    margin-left: 20px;
+}
+
+.maincolor{
+  color: var(--doccolor);
+  font-size: 4;
+}
+
+.espurlcolor{
+  color: #990000;
+  text-decoration: none;
+  cursor: auto;
+}
+.comment{
+  color: #cecece;
+  text-decoration: none;
+  cursor: auto;
+}
+
+footer {
+    background: var(--doccolor);
+    position:fixed;
+    left: 0;
+    padding-left: 0;
+    bottom:0px;
+    height: 10%;
+    width:30%;
+    text-align: center;
+}
+::-webkit-scrollbar {
+    width: 5px;
+}
+ </style> </head><body> <div id="content"> <div id="sidebar"> <div id="innersidebar"> <h1><a href="#to_top_0987654321"> Contents </a></h1><h2><a href="#my_includes_0987654321"> Includes </a></h2><br><a href="#aurl"> Avaliable url </a> <br><h1> <a href="#code_title0"> Code_Title  </a> </h1><h1> <a href="#globalvars0"> Global Vars  </a> </h1><h1> <a href="#myfunctions0"> My Functions  </a> </h1><h2> <a href="#handleroot0"> HandleRoot  </a> </h2><h1> <a href="#setupfunctions0"> Setup Functions  </a> </h1><h2> <a href="#setupfilesystem0"> SetUpFileSystem  </a> </h2><h2> <a href="#setupserveron0"> SetUpServerOn  </a> </h2><h1> <a href="#arduinosetupandloop0"> Arduino setup and loop  </a> </h1><h2> <a href="#setup0"> Setup  </a> </h2><h2> <a href="#loop0"> Loop  </a> </h2><br> <br></div></div> <div id="main"> <div id="maininnerdiv"> <div class="container" id="title"> <h1 class="maincolor"> <a name="to_top_0987654321">Code_From_example_ino </a></h1> <font class="maincolor"> (Version: 2017-10-24 17:41:38 +0100) </font> </div> <div class="container" id="main1"> <br> <a name="aurl" <h3 class="maincolor"> Avaliable url: </h3> </a> <br> <h2 class="maincolor"><a name="my_includes_0987654321"> Includes </a></h2><font class="comment">ESP8266WiFi.h</font><br><br><br><h1 class="maincolor"> <a name="code_title0"> Code_Title </a></h1><br><font class="maincolor">dscr</font>: This is a description for this title.<br><h1 class="maincolor"> <a name="globalvars0"> Global Vars </a></h1><br><font class="comment">Some vars. */</font><br>char NUM0 = 0;<br>char NUM1 = 9;<br>int  ENUM = 9;<br>int OTHER = 879879879;<br><br>//Code name<br>#define CODENAME Example_bla_bla_bla<br><br><font class="comment">--- Define IO --- */</font><br>#define SCL_RTC 5  // D1<br>#define SDA_RTC 4  // D2<br><br><br><h1 class="maincolor"> <a name="myfunctions0"> My Functions </a></h1><br><h2 class="maincolor"> <a name="handleroot0"> HandleRoot </a></h2><br><font class="maincolor">args</font>: ()<br><font class="maincolor">rtrn</font>: void<br><font class="maincolor">dscr</font>: Verifies that you are connected to the esp.<br><h1 class="maincolor"> <a name="setupfunctions0"> Setup Functions </a></h1><br><h2 class="maincolor"> <a name="setupfilesystem0"> SetUpFileSystem </a></h2><br><font class="maincolor">args</font>: ()<br><font class="maincolor">rtrn</font>: void<br><font class="maincolor">dscr</font>: Start FileSistem<br><h2 class="maincolor"> <a name="setupserveron0"> SetUpServerOn </a></h2><br><br><font class="maincolor">args</font>: ()<br><font class="maincolor">rtrn</font>: void<br><font class="maincolor">dscr</font>: Setup Server interrupts<br><h1 class="maincolor"> <a name="arduinosetupandloop0"> Arduino setup and loop </a></h1><br><h2 class="maincolor"> <a name="setup0"> Setup </a></h2><br>Setup arduino:<br><font class="maincolor">dscr</font>: Start file system.<br>Check if config.txt exists and is valid.<br>Start WiFi AP & STA. AP's ssid and pass are read from config.txt if the file is valid<br><font class="comment">*****************************************************************************</font><br>void setup()<br>{<br><font class="comment">File system*/</font><br>setUpFileSystem();<br><br>//code on ...<br><br><font class="comment">Setup server*/</font><br>setUpServerOn();<br>}<br><br><h2 class="maincolor"> <a name="loop0"> Loop </a></h2><br><font class="maincolor">dscr</font>: Main loop in arduino<br><font class="comment">*****************************************************************************</font><br>void loop()<br>{<br>// More code<br>}<br> <br> <br> <center> <font color="white"> end of page </font> </center></div> </div></div> </div> <footer> <p>Code By: AA @ <a href="https://github.com/onereallylongname"> github</a></p></footer> </body> </html>

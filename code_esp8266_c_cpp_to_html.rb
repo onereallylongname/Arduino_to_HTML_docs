@@ -13,11 +13,11 @@ class FileCToHtml
           # -t            Set page title. Default \"Code functions\"" # not implemented
   FILE_TYPES = ['c', 'cpp', 'ino', 'js']
   LANGS = {:cLike => {'//1>' => :T1, '//2>' => :T2, '//3>' => :T3, 'args:' => :args, '//args:' => :args, 'rtrn:' => :rtrn, '//rtrn:' => :rtrn, 'dscr:' => :dscr, '//dscr:' => :dscr,
-  '/***' => :startB, '***/' => :endB, '#include' => :incl}}
+  '//B>' => :startB, '//B<' => :endB, '/*' => :startC, '*/' => :endC,'#include' => :incl}}
   TAGS_TRANSLATOR = {:p => 'p', :T1 => 'h1', :T2 => 'h2', :T3 => 'h2', :args => 'args', :rtrn => 'rtrn', :dscr => 'dscr'}
   TTLS = [:T1,:T2, :T3] # Title headers
   DESC = [:dscr, :args, :rtrn] # Code descriptors
-  # CMNT = [:startC, :endC] # Comment identifier # '/*' => :startC, '*/' => :endC,
+  CMNT = [:startC, :endC] # Comment identifier
   BLCK = [:startB, :endB] # Comment Bloks
 
 
@@ -32,11 +32,6 @@ class FileCToHtml
     if @options[:v]; puts Version; return; end
     if @options[:h]; puts Help; return; end
     if @options[:f].empty?; puts 'Exit: file types not suported.'; return; end
-
-
-    p @options
-puts 'estou aqui'
-#return  #TODO: retirar return
 
   # For each file, if it exists, read original and create html
     @options[:f].each do |name|
@@ -126,8 +121,13 @@ private
     end
   end
 
-  def addIncluds
-    return "<h2 class=\"maincolor\"> Includes </h2>" + @includes + '<br>' if @includes != ""
+  def add_includs
+    return "<h2 class=\"maincolor\"><a name=\"my_includes_0987654321\"> Includes </a></h2>" + @includes if @includes != ""
+    return ""
+  end
+
+  def add_includs_header
+    return "<h2><a href=\"#my_includes_0987654321\"> Includes </a></h2><br>" if @includes != ""
     return ""
   end
 
@@ -164,18 +164,15 @@ private
     if TTLS.include? textTag
       @fileBody += "<#{TAGS_TRANSLATOR[textTag]} class=\"maincolor\"> <a name=\"#{link}\"> #{lineContente} </a></#{TAGS_TRANSLATOR[textTag]}><br>"
     elsif textTag == :incl
-        @includes += "<font class=\"comment\">#{lineContente.gsub(/[^0-9A-Za-z\-_\/]/, '')}</font><br>"
+        @includes += "<font class=\"comment\">#{lineContente.gsub(/[^0-9A-Za-z\-_\/\.]/, '')}</font><br>"
     elsif inBlock
       if DESC.include? textTag
         @fileBody += "<font class=\"maincolor\">#{TAGS_TRANSLATOR[textTag]}</font>: #{lineContente}<br>"
-      elsif BLCK.include? textTag
+      elsif CMNT.include? textTag
         inComment = !inComment
+        @fileBody += "<font class=\"comment\">#{lineContente}</font><br>"
       elsif !BLCK.include? textTag
-        if inComment
-          @fileBody += "<font class=\"comment\">#{lineContente}</font><br>"
-        else
-          @fileBody += "#{lineContente}<br>"
-        end
+        @fileBody += "#{lineContente}<br>"
       end
     end
     return inComment
@@ -215,12 +212,6 @@ private
       lineCounter, lastNum = disply_percente lineCounter, numLines, lastNum
       textTags, lineContente = text_tags line, lang
       inBlock = find_block textTags, inBlock
- # p lineCounter
- # p textTags
-# p keyLessLine
- #system('pause')
-# next
-
       if TTLS.include? textTags
           link = addToSideBar lineContente, textTags, hashTagsFound
           hashTagsFound << link
@@ -231,57 +222,12 @@ private
     @sileSideBar = @sileSideBar + "<br> <br>"
     puts 'Done (1/2)'
   end
-=begin
-      if a.eql? "//>>"
-        counter = 2
-        headerc = true
-      end
-      nameTag = ""
-      if headerc
-        headeropen  = ""
-        headerClose = ""
-        nameTag = line[4..-1].gsub(/[^0-9A-Za-z\-_]/, '')
-        if nameTag.include? "------"
-          headeropen  = "<br>"
-        end
-        if firstFunc
-          headeropen  = "<br>"
-          nameTag = nameTag.upcase
-        end
-        @sileSideBar = @sileSideBar + "<a href=\"##{nameTag.downcase}\">" + headeropen + nameTag + "</h4> <br> </a>"
-        firstFunc = false
-      end
-      if counter > 0
-        if headerc
-          @fileBody = @fileBody + "<br><p> <a name=\"#{nameTag.downcase}\"> <p class=\"maincolor\">" + line[4..-1].chomp + " </p>"
-          headerc = false
-        elsif a.eql? "/***" or a.eql? "****"
-            counter -= 1
-        elsif line.split(' ')[0].eql? "args:" or line.split(' ')[0].eql? "dscr:" or line.split(' ')[0].eql? "rtrn:"
-          @fileBody = @fileBody + "<font class=\"maincolor\">" + line.split(' ')[0] + "</font>" + line[6..-1].chomp + "<br>"
-        elsif line.include? "/*" or line.include? "*/"
-          @fileBody = @fileBody + "<font class=\"maincolor\">" + line + "</font> <br>"
-        else
-          @fileBody = @fileBody + line + "<br>"
-        end
-         @fileBody = @fileBody + "</p>" if counter == 0
-      end
-      #check server.on functions
-      if line.include? "server.on("
-        @urlNumber += 1
-        splitLine = line.split(/[\s(),]/).delete_if { |var| var.eql? ""}
-        @webUrl = @webUrl + "<a href=\"##{splitLine[-2].downcase}\" class=\"espurlcolor\" >" + splitLine[1] +  "</a> ; "
-        @webUrl = @webUrl + "<br>" if @urlNumber % 10 == 0
-      end
-    end
-=end
 
   def writeToMyFile fileName
     codeFileNewname = rename_out fileName
     style = getStyle
-    #TODO: refactor header (create function)
     htmlHeader = "<!DOCTYPE html> <html> <head> <title> #{codeFileNewname.split('.')[0]} </title> <style> #{style} </style> </head>"
-    htmlBody = "<body> <div id=\"content\"> <div id=\"sidebar\"> <div id=\"innersidebar\"> <h2> Contents </h2> <br>" + @sileSideBar + "</div></div> <div id=\"main\"> <div id=\"maininnerdiv\"> <div class=\"container\" id=\"title\"> <h1 class=\"maincolor\"> #{codeFileNewname.split('.')[0]} </h1> <font class=\"maincolor\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> " + @webUrl + addIncluds + @fileBody + " </div> </div></div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
+    htmlBody = "<body> <div id=\"content\"> <div id=\"sidebar\"> <div id=\"innersidebar\"> <h1><a href=\"#to_top_0987654321\"> Contents </a></h1>" + add_includs_header + @sileSideBar + "</div></div> <div id=\"main\"> <div id=\"maininnerdiv\"> <div class=\"container\" id=\"title\"> <h1 class=\"maincolor\"> <a name=\"to_top_0987654321\">#{codeFileNewname.split('.')[0]} </a></h1> <font class=\"maincolor\"> (Version: " + Time.now.to_s  + ") </font> </div> <div class=\"container\" id=\"main1\"> <br> " + @webUrl + add_includs + @fileBody + " <br> <br> <center> <font color=\"white\"> end of page </font> </center></div> </div></div> </div> <footer> <p>Code By: AA @ <a href=\"https://github.com/onereallylongname\"> github</a></p></footer> </body> </html>"
     File.write(make_path(:o) + codeFileNewname, htmlHeader + htmlBody)
     puts "Done (2/2): #{codeFileNewname}"
   end
