@@ -3,7 +3,7 @@ It's a small ruby script that helped me to keep track of my esp8266 code (while 
 However it works with c, cpp, and js.
 
 # How it work
-This script uses patterns in your comments to decide what to write to the html page. Some are custom made for this porpoise, others are from the language.
+This script uses patterns in your comments to decide what to write to the html page. Some are custom made for this purpose, others are from the language.
 Use the patterns to define what goes to the page and how it's represented.
 
 # Usage
