@@ -17,21 +17,21 @@ You can check the results from the example code in the out folder.
 The code output name is: Code_From_<file name>.html , where <file name> is your file name.
 
 ### Patterns
-Patterns  | name          | HTML
----------------------------------
-//1>      | \Title 1       | <h1>
-//2>      | \Title 2       | <h2>
-//3>      | \Title 3       | <h3>
-//B>      | Start Block   | ----
-//B<      | End Block     | ----
-dscr:     | Description   | dscr
-args:     | Arguments     | args
-rtrn:     | Return value  | rtrn
-/*        | Start comments| comment color
-\*/        | End comments  | comment color
-\#include  | include       | ----
+|Patterns   | name          | HTML
+| --------- | ------------- | ------
+| //1>      | title 1       | <h1>
+| //2>      | title 2       | <h2>
+| //3>      | title 3       | <h3>
+| //B>      | Start Block   | ----
+| //B<      | End Block     | ----
+| dscr:     | Description   | dscr
+| args:     | Arguments     | args
+| rtrn:     | Return value  | rtrn
+| /*        | Start comments| comment color
+| \*/        | End comments  | comment color
+| \#include  | include       | ----
 *Only for esp8266*
-server.on | Custom path   | If used appears as a separate Title
+| server.on | Custom path   | If used appears as a separate Title
 
 ### Arguments
 From the console:
