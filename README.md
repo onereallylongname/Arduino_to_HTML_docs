@@ -19,9 +19,9 @@ The code output name is: Code_From_<file name>.html , where <file name> is your 
 ### Patterns
 Patterns  | name          | HTML
 ---------------------------------
-//1>      | Title 1       | <h1>
-//2>      | Title 2       | <h2>
-//3>      | Title 3       | <h3>
+//1>      | \Title 1       | <h1>
+//2>      | \Title 2       | <h2>
+//3>      | \Title 3       | <h3>
 //B>      | Start Block   | ----
 //B<      | End Block     | ----
 dscr:     | Description   | dscr
